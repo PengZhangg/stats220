@@ -8,4 +8,6 @@ A little about me:
 - I am taking STATS 220 because I am interested in applications of data technologies and how they could be useful for my degree and my career!
 - I am interested in learning about the R language!
 
-A meme that captures how I currently feel about my university studies is ![](https://tenor.com/ZSnlSKWMsK.gif)
+A meme that captures how I currently feel about my university studies is ![](https://c.tenor.com/CbcPDzn6PJgAAAAd/tenor.gif)
+
+
