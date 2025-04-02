@@ -1,11 +1,11 @@
 ---
-title: My dynamic report
+title: "My dynamic report"
 output: html_fragment
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
-
+library(tidyverse)
 ```
 
 ```{css}
@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
 body {
   font-family: 'Open Sans', sans-serif;
   background: linear-gradient(to bottom, #f2f2f2, #e0e0e0);
+  padding: 2rem;
 }
 
 h2 {
@@ -39,31 +40,20 @@ a {
   text-align: center;
   font-style: italic;
 }
-
-.content-box {
-  max-width: 75%;
-  margin: auto;
-  padding: 2rem;
-  background-color: white;
-  border-radius: 10px;
-}
-
 ```
-<div class="content-box">
+
 ## YouTube thumbnail analysis
 
-This dynamic report observes patterns in how YouTube thumbnails are designed based off the category of the video.
-Below, I have focused on two key ideas to look out for - how clickbaity the thumbnails are in each different category, and how visually complex the thumbnails are. 
+This dynamic report observes patterns in how YouTube thumbnails are designed based on the category of the video.  
+We're checking two spicy metrics: how **clickbaity** the thumbnails are, and how **visually complex** they get 👀.
 
 ### Average clickbait value sorted by video category
 
 ```{r}
-library(tidyverse)
-
-# original data logged from Google forms
+# Load the dataset
 logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSB5uWBQ7zIPmwYYxTWnseFjsoVWPTGBp4nYuq2b4FMHCtaMSnTWFKiYo3wRrKRmMv1QmnkJKc9aQB_/pub?gid=1101770303&single=true&output=csv")
 
-# rename variables & create new data frame
+# Rename variables
 latest_data <- logged_data %>%
   rename(
     timestamp = `Timestamp`,
@@ -73,14 +63,14 @@ latest_data <- logged_data %>%
     visual_complexity = `How visually complex is the YouTube thumbnail? With 1 Being minimal/less cluttered, and 5 being very cluttered, with many things present in the thumbnail.`
   )
 
-# identifying summary values
-mean_clickbait_score = mean(latest_data$clickbait_score)
-median_clickbait_score = median(latest_data$clickbait_score)
+# Summary stats
+mean_clickbait_score <- mean(latest_data$clickbait_score)
+median_clickbait_score <- median(latest_data$clickbait_score)
 
-# Mean click score sorted by category
+# Plot by category
 latest_data %>%
   group_by(video_category) %>%
-  summarise(avg_clickbait = mean(clickbait_score)) %>% 
+  summarise(avg_clickbait = mean(clickbait_score)) %>%
   ggplot() +
   geom_bar(aes(x = video_category, y = avg_clickbait), stat = "identity") +
   geom_hline(yintercept = mean_clickbait_score, linetype = "dashed", color = "red") +
@@ -88,38 +78,23 @@ latest_data %>%
   geom_hline(yintercept = median_clickbait_score, linetype = "dashed", color = "red") +
   annotate("text", x = 1.5, y = median_clickbait_score + 0.3, label = "Median Clickbait Score") +
   labs(title = "Average Clickbait Value by Video Category",
-       subtitle = "How exaggerated/sensationalized/misleading the thumbnails are for each category of YouTube videos.",
+       subtitle = "How exaggerated/sensationalized/misleading the thumbnails are for each category.",
        x = "Video Category",
        y = "Avg Clickbait Score")
-
 ```
 
+The mean clickbait score across all categories is `r round(mean_clickbait_score, 1)`,  
+and the median is `r round(median_clickbait_score, 1)`.
 
-The mean clickbait score across all of the video categories is `r round(mean_clickbait_score, 1)`,
-and the median clickbait score across all the video categories is `r round(median_clickbait_score, 1)`.
+---
 
-### Average visual complexity of YouTube thumbnails, sorted by the video category
+### Average visual complexity of YouTube thumbnails, sorted by category
+
 ```{r}
-library(tidyverse)
+# Summary stat
+mean_visual_complexity <- mean(latest_data$visual_complexity)
 
-# original data logged from Google forms
-logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSB5uWBQ7zIPmwYYxTWnseFjsoVWPTGBp4nYuq2b4FMHCtaMSnTWFKiYo3wRrKRmMv1QmnkJKc9aQB_/pub?gid=1101770303&single=true&output=csv")
-
-# rename variables & create new data frame
-latest_data <- logged_data %>%
-  rename(
-    timestamp = `Timestamp`,
-    video_category = `What kind of YouTube video is the thumbnail suggesting?`,
-    has_faces = `Are there people/faces visible on the thumbnail?`,
-    clickbait_score = `On a scale from 0 to 10, with 10 being very "clickbaity", how "clickbait" is the thumbnail? (How exaggerated/sensationalized/misleading) is the thumbnail?`,
-    visual_complexity = `How visually complex is the YouTube thumbnail? With 1 Being minimal/less cluttered, and 5 being very cluttered, with many things present in the thumbnail.`
-  )
-
-# identifying summary values
-median_clickbait_score = median(latest_data$clickbait_score)
-mean_visual_complexity = mean(latest_data$visual_complexity)
-
-# Thumbnail complexity by video category
+# Plot visual complexity
 latest_data %>%
   group_by(video_category) %>%
   summarise(avg_complexity = mean(visual_complexity)) %>%
@@ -128,11 +103,10 @@ latest_data %>%
   geom_hline(yintercept = mean_visual_complexity, linetype = "dashed", color = "red") +
   annotate("text", x = 1.5, y = mean_visual_complexity + 0.3, label = "Overall Avg Visual Complexity") +
   labs(title = "Average Visual Complexity of YouTube Thumbnails by Video Category",
-       subtitle = "How visually complex (minimal/not very cluttered vs very cluttered) the thumbnails are for each category of YouTube videos.",
+       subtitle = "How visually cluttered the thumbnails are for each video category.",
        x = "Video Category",
        y = "Avg Visual Complexity")
 ```
 
+The mean visual complexity score across all categories is `r round(mean_visual_complexity, 1)`.
 
-The mean visual complexity score across all of the video categories is `r round(mean_visual_complexity, 1)`. 
-</div>
