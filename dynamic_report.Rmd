@@ -45,7 +45,7 @@ a {
 ## YouTube thumbnail analysis
 
 This dynamic report observes patterns in how YouTube thumbnails are designed based on the category of the video.  
-We're checking two spicy metrics: how **clickbaity** the thumbnails are, and how **visually complex** they get 👀.
+We're checking two spicy metrics: how **clickbaity** the thumbnails are, and how **visually complex** they get.
 
 ### Average clickbait value sorted by video category
 
